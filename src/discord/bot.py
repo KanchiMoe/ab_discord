@@ -21,7 +21,6 @@ class DiscordBot(commands.Bot):
     async def setup_hook(self):
         logging.info("Registering commands...")
 
-        await self.load_extension("src.discord.commands.ping")
         await self.load_extension("src.discord.commands.quit")
 
         logging.info("Syncing command tree with Discord...")
