@@ -4,7 +4,10 @@ import logging
 
 
 class DiscordBot(commands.Bot):
+    instance = None
+
     def __init__(self):
+        DiscordBot.instance = self
         intents = discord.Intents.default()
         intents.guilds          = True # Events related to servers, such as on_guild_join or on_guild_update
         intents.message_content = True # Access to the content of messages (needed to read messages)
