@@ -1,0 +1,50 @@
+name: Check everyone has an access role
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "11 2 * * 1" # 2:11am, every monday
+
+permissions:
+  contents: write       # required for pushing commits
+  pull-requests: write  # required for merging PRs
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v6
+        with:
+          ref: master
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.x'
+
+      - name: Cache pip
+        uses: actions/cache@v5
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run script
+        id: run_py_script
+        env:
+          NOT_DOTENV: ${{ vars.NOT_DOTENV }}
+          LOG_LEVEL: ${{ vars.LOG_LEVEL }}
+
+          DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
+          PGHOST: ${{ secrets.PG_HOST }}
+          PGPORT: ${{ secrets.PG_PORT }}
+          PGDATABASE: ${{ secrets.PG_DATABASE }}
+          PGUSER: ${{ secrets.PG_USER }}
+          PGPASSWORD: ${{ secrets.PG_PASSWORD }}
+        run: |
+          python main.py --access
