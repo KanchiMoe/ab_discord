@@ -3,7 +3,7 @@ import logging
 from src.constants import AB_SERVER_ID, RANK_ROLE_IDS, RANK_EXCEMPTION_ROLE_IDS, RANK_LOG_CHANNEL
 from src.discord.bot import DiscordBot
 
-async def no_access_rank_check():
+async def no_access_rank_check() -> None:
     # discord setup
     discord_bot = DiscordBot.instance
     guild = discord_bot.get_guild(AB_SERVER_ID)
@@ -32,4 +32,4 @@ async def no_access_rank_check():
     logging.info(f"{len(users_without_ranks)} users without at least one access rank")
     await channel.send(content=f"There are **{len(users_without_ranks)}** users without at least one access rank.")
 
-    return
+    return None
