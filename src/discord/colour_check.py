@@ -49,6 +49,7 @@ async def no_colour_check() -> None:
         logging.warning("Channel was not found in cache")
         channel = await guild.fetch_channel(COLOUR_LOG_CHANNEL)
 
+    logging.info(f"There are {len(users_without_colour_roles)} users without a role colour role.")
     await channel.send(content=f"There are **{len(users_without_colour_roles)}** users without a role colour role.")
 
     # assign a random role
