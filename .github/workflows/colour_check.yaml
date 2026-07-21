@@ -1,4 +1,4 @@
-name: Check everyone has an access role
+name: Check everyone has a colour role
 
 on:
   workflow_dispatch:
