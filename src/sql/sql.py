@@ -1,4 +1,5 @@
 from datetime import datetime, timezone
+import logging
 import psycopg2
 import uuid
 
@@ -6,7 +7,14 @@ UUID = str(uuid.uuid4())
 TIMESTAMP = datetime.now(timezone.utc)
 
 def add_run():
-    conn = psycopg2.connect()
+    try:
+        conn = psycopg2.connect()
+
+    except Exception as e:
+        err_msg = f"Could not connect to database: {e}"
+        logging.critical(err_msg)
+        raise RuntimeError(err_msg)
+
 
     with conn.cursor() as cursor:
         cursor.execute("""
