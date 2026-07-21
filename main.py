@@ -33,14 +33,14 @@ async def main(option: int):
     async def on_ready():
         logging.info(f"Logged in as {discord_bot.user} ({discord_bot.user.id})")
 
+        # write an run in db
+        add_run()
+
         if option == 1:
             await no_access_rank_check()
 
         elif option == 2:
             await no_colour_check()
-
-        # write an run in db
-        add_run()
 
         await quit(discord_bot)
 
