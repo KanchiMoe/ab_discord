@@ -8,7 +8,7 @@ from src.discord.commands.quit import quit
 UUID = str(uuid.uuid4())
 TIMESTAMP = datetime.now(timezone.utc)
 
-def add_run():
+def add_run(action: str):
     try:
         conn = psycopg2.connect()
 
@@ -21,10 +21,10 @@ def add_run():
 
     with conn.cursor() as cursor:
         cursor.execute("""
-            INSERT INTO metadata_runs (_uuid, _timestamp)
-            VALUES (%s, %s);
+            INSERT INTO metadata_runs (_uuid, _timestamp, _action)
+            VALUES (%s, %s, %s);
             """,
-            (UUID, TIMESTAMP)
+            (UUID, TIMESTAMP, action)
         )
         conn.commit()
     conn.close()
