@@ -66,9 +66,12 @@ async def no_colour_check() -> None:
             await channel.send(content=f"**{random_role.name}** was assigned to {user.mention}")
 
             # to not flood discord
-            time.sleep(3)
+            time.sleep(1)
             
         except Exception as e:
             print(e)
+
+    logging.info("Role colour check complete.")
+    await channel.send(content="Role colour check complete.")
 
     return None
