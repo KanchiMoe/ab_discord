@@ -21,7 +21,7 @@ logging.basicConfig(
     level=LOG_LEVEL
 )
 
-async def main(option: int):
+async def main(option: int, run_type: str):
     from src.sql.sql import add_run
     from src.discord.rank_check import no_access_rank_check
     from src.discord.colour_check import no_colour_check
@@ -33,14 +33,15 @@ async def main(option: int):
     async def on_ready():
         logging.info(f"Logged in as {discord_bot.user} ({discord_bot.user.id})")
 
+        # write an run in db
+        add_run(run_type)
+
         if option == 1:
             await no_access_rank_check()
 
         elif option == 2:
             await no_colour_check()
-
-        # write an run in db
-        add_run()
+            
 
         await quit(discord_bot)
 
@@ -59,10 +60,12 @@ if __name__ == "__main__":
     option = 0
     if args.access:
         option = 1
+        run_type = "access"
     elif args.colours:
         option = 2
+        run_type = "colour"
     else:
         print("Please use --access or --colours")
         sys.exit(1)
 
-    asyncio.run(main(option))
+    asyncio.run(main(option, run_type))
