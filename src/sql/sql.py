@@ -3,6 +3,8 @@ import logging
 import psycopg2
 import uuid
 
+from src.discord.commands.quit import quit
+
 UUID = str(uuid.uuid4())
 TIMESTAMP = datetime.now(timezone.utc)
 
@@ -13,6 +15,7 @@ def add_run():
     except Exception as e:
         err_msg = f"Could not connect to database: {e}"
         logging.critical(err_msg)
+        quit()
         raise RuntimeError(err_msg)
 
 
