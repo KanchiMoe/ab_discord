@@ -25,6 +25,7 @@ async def main(option: int, run_type: str):
     from src.sql.sql import add_run
     from src.discord.rank_check import no_access_rank_check
     from src.discord.colour_check import no_colour_check
+    from src.discord.member_list import memberlist
 
     DISCORD_BOT_TOKEN = os.environ["DISCORD_BOT_TOKEN"]
     discord_bot = DiscordBot()
@@ -41,6 +42,9 @@ async def main(option: int, run_type: str):
 
         elif option == 2:
             await no_colour_check()
+
+        elif option == 3:
+            await memberlist()
             
 
         await quit(discord_bot)
@@ -55,6 +59,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--access', action='store_true')
     parser.add_argument('--colours', action='store_true')
+    parser.add_argument('--members', action='store_true')
     args = parser.parse_args()
 
     option = 0
@@ -64,8 +69,11 @@ if __name__ == "__main__":
     elif args.colours:
         option = 2
         run_type = "colour"
+    elif args.members:
+        option = 3
+        run_type = "members"
     else:
-        print("Please use --access or --colours")
+        print("Please use access, colours or members")
         sys.exit(1)
 
     asyncio.run(main(option, run_type))
