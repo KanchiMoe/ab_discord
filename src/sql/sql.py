@@ -3,10 +3,6 @@ import logging
 import psycopg2
 import uuid
 
-
-
-
-
 class Database:
     # class vars
     _connection = None
@@ -37,32 +33,11 @@ class Database:
             cls._connection = None
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 UUID = str(uuid.uuid4())
 TIMESTAMP = datetime.now(timezone.utc)
 
 def add_run(action: str):
-    try:
-        conn = psycopg2.connect()
-
-    except Exception as e:
-        err_msg = f"Could not connect to database: {e}"
-        logging.critical(err_msg)
-        quit()
-        raise RuntimeError(err_msg)
-
-
+    conn = Database.get_connection()
     with conn.cursor() as cursor:
         cursor.execute("""
             INSERT INTO metadata_runs (_uuid, _timestamp, _action)
@@ -76,15 +51,7 @@ def add_run(action: str):
     return None
 
 def sql_get_member_data() -> list:
-    # to do, make this better w/ add_run
-    try:
-        conn = psycopg2.connect()
-
-    except Exception as e:
-        err_msg = f"Could not connect to database: {e}"
-        logging.critical(err_msg)
-        quit()
-        raise RuntimeError(err_msg)
+    conn = Database.get_connection()
 
     all_member_ids    = []
     ids_not_in_server = []
@@ -130,7 +97,7 @@ def sql_get_member_data() -> list:
     return all_member_ids, ids_not_in_server, ids_in_server
 
 def sql_add_new_member():
-    pass
+    conn = Database.get_connection()
 
 
 

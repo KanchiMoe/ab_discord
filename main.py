@@ -22,7 +22,7 @@ logging.basicConfig(
 )
 
 async def main(option: int, run_type: str):
-    from src.sql.sql import add_run
+    from src.sql.sql import Database, add_run
     from src.discord.rank_check import no_access_rank_check
     from src.discord.colour_check import no_colour_check
     from src.discord.member_list import memberlist
@@ -33,6 +33,9 @@ async def main(option: int, run_type: str):
     @discord_bot.event
     async def on_ready():
         logging.info(f"Logged in as {discord_bot.user} ({discord_bot.user.id})")
+
+        # DB connection
+        Database.connect()
 
         # write an run in db
         add_run(run_type)
