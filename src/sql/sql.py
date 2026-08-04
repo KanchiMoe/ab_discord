@@ -34,6 +34,7 @@ class Database:
         if cls._connection is not None:
             cls._connection.close()
             cls._connection = None
+            logging.info("Database connection closed")
 
 
 UUID = str(uuid.uuid4())
@@ -49,7 +50,6 @@ def add_run(action: str):
             (UUID, TIMESTAMP, action)
         )
         conn.commit()
-    conn.close()
 
     return None
 
@@ -110,3 +110,4 @@ def sql_add_new_member(member: Member):
             """,
             (member.id, member.name, member.created_at, True, member.display_name, member.joined_at, member.bot)
         )
+        conn.commit()
