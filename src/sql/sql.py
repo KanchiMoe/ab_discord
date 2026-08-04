@@ -110,6 +110,7 @@ def sql_add_new_member(member: Member):
             """,
             (member.id, member.name, member.created_at, True, member.display_name, member.joined_at, member.bot)
         )
+        logging.info(f"Member joined, rows updated: {cursor.rowcount}")
         conn.commit()
 
 def sql_member_returned(member: Member):
@@ -121,11 +122,12 @@ def sql_member_returned(member: Member):
             SET in_server = True
             WHERE member_id = %s AND in_server = False;
             """,
-            (member.id)
+            (member.id,)
         )
+        logging.info(f"Member rejoined, rows updated: {cursor.rowcount}")
         conn.commit()
 
-def sql_member_left(member: Member):
+def sql_member_left(member_id: int):
     conn = Database.get_connection()
 
     with conn.cursor() as cursor:
@@ -134,6 +136,7 @@ def sql_member_left(member: Member):
             SET in_server = False
             WHERE member_id = %s AND in_server = True;
             """,
-            (member.id)
+            (member_id,)
         )
+        logging.info(f"Member left, rows updated: {cursor.rowcount}")
         conn.commit()
