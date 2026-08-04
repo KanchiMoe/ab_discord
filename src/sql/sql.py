@@ -3,6 +3,8 @@ import logging
 import psycopg2
 import uuid
 
+from discord import Member
+
 class Database:
     # class vars
     _connection = None
@@ -13,6 +15,7 @@ class Database:
 
         try:
             cls._connection = psycopg2.connect()
+            logging.info("Connected to database")
 
         except Exception as e:
             err_msg = f"Could not connect to database: {e}"
@@ -96,24 +99,14 @@ def sql_get_member_data() -> list:
 
     return all_member_ids, ids_not_in_server, ids_in_server
 
-def sql_add_new_member():
+def sql_add_new_member(member: Member):
     conn = Database.get_connection()
 
-
-
-
-
-
-
-
-
-
-    # for member in guild.members:
-    #     if member.id not in db_all_ids:
-    #         # Not in DB
-    #         cursor.execute("""
-    #             INSERT INTO members
-    #             (member_id, member_name, account_created, in_server, nickname, joined, is_bot)
-    #             VALUES (%s, %s, %s, %s, %s, %s, %s);
-    #             """, (member.id, member.name, member.created_at, True, member.display_name, member.joined_at, member.bot))
-    #         print(f"Adding member: {member.name} ({member.id})")
+    with conn.cursor() as cursor:
+        cursor.execute("""
+            INSERT INTO members
+            (member_id, member_name, account_created, in_server, nickname, joined, is_bot)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+            """,
+            (member.id, member.name, member.created_at, True, member.display_name, member.joined_at, member.bot)
+        )
