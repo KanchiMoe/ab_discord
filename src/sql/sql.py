@@ -3,7 +3,51 @@ import logging
 import psycopg2
 import uuid
 
-from src.discord.commands.quit import quit
+
+
+
+
+class Database:
+    # class vars
+    _connection = None
+
+    @classmethod
+    def connect(cls):
+        from src.discord.commands.quit import quit
+
+        try:
+            cls._connection = psycopg2.connect()
+
+        except Exception as e:
+            err_msg = f"Could not connect to database: {e}"
+            logging.critical(err_msg)
+            quit()
+            raise RuntimeError(err_msg)
+
+    @classmethod
+    def get_connection(cls):
+        if cls._connection is None:
+            raise RuntimeError("Database not connected. Call Database.connect() first.")
+        return cls._connection
+
+    @classmethod
+    def close_connection(cls):
+        if cls._connection is not None:
+            cls._connection.close()
+            cls._connection = None
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 UUID = str(uuid.uuid4())
 TIMESTAMP = datetime.now(timezone.utc)
@@ -84,3 +128,25 @@ def sql_get_member_data() -> list:
 
 
     return all_member_ids, ids_not_in_server, ids_in_server
+
+def sql_add_new_member():
+    pass
+
+
+
+
+
+
+
+
+
+
+    # for member in guild.members:
+    #     if member.id not in db_all_ids:
+    #         # Not in DB
+    #         cursor.execute("""
+    #             INSERT INTO members
+    #             (member_id, member_name, account_created, in_server, nickname, joined, is_bot)
+    #             VALUES (%s, %s, %s, %s, %s, %s, %s);
+    #             """, (member.id, member.name, member.created_at, True, member.display_name, member.joined_at, member.bot))
+    #         print(f"Adding member: {member.name} ({member.id})")
