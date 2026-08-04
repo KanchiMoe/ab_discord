@@ -1,9 +1,9 @@
-name: Check everyone has a colour role
+name: Update member list DB
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: "11 3 * * 1" # 3:11am, every monday
+    - cron: "2,17,32,47 * * * *"  # every 15mins but uncommon
 
 permissions:
   contents: write       # required for pushing commits
@@ -47,4 +47,4 @@ jobs:
           PGUSER: ${{ secrets.PG_USER }}
           PGPASSWORD: ${{ secrets.PG_PASSWORD }}
         run: |
-          python main.py --colour
+          python main.py --members
