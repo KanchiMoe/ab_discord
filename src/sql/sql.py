@@ -31,7 +31,7 @@ def add_run(action: str):
 
     return None
 
-def get_member_data() -> list:
+def sql_get_member_data() -> list:
     # to do, make this better w/ add_run
     try:
         conn = psycopg2.connect()
@@ -42,20 +42,45 @@ def get_member_data() -> list:
         quit()
         raise RuntimeError(err_msg)
 
-    # get all IDs
-    all_member_ids = []
+    all_member_ids    = []
+    ids_not_in_server = []
+    ids_in_server     = []
 
+    # all IDs
     with conn.cursor() as cursor:
         cursor.execute("""
             SELECT member_id FROM members;
             """,
         )
-        # results from db
         rows = cursor.fetchall()
         for row in rows:
             member_id = row[0]
             all_member_ids.append(member_id)
+    logging.info(f"No of entries in all_member_ids: {len(all_member_ids)}")
 
-    logging.info(f"Entries in all_member_ids: {len(all_member_ids)}")
+    # NOT in server
+    with conn.cursor() as cursor:
+        cursor.execute("""
+            SELECT member_id FROM members
+            WHERE in_server = False;
+            """,
+        )
+        rows = cursor.fetchall()
+        for row in rows:
+            ids_not_in_server.append(row[0])
+    logging.info(f"No of entries in ids_not_in_server: {len(ids_not_in_server)}")
 
-    return all_member_ids
+    # IN server
+    with conn.cursor() as cursor:
+        cursor.execute("""
+            SELECT member_id FROM members
+            WHERE in_server = True;
+            """,
+        )
+        rows = cursor.fetchall()
+        for row in rows:
+            ids_in_server.append(row[0])
+    logging.info(f"No of entries in ids_in_server: {len(ids_in_server)}")
+
+
+    return all_member_ids, ids_not_in_server, ids_in_server
