@@ -3,10 +3,13 @@ from discord import app_commands
 from discord.ext import commands
 import logging
 
+from src.sql.sql import Database
+
 async def quit(bot: commands.Bot):
     logging.info("Bot is quitting...")
     
     await bot.close()
+    Database.close_connection()
 
 def is_owner():
     async def predicate(interaction: discord.Interaction):
