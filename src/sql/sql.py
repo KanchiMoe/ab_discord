@@ -111,3 +111,29 @@ def sql_add_new_member(member: Member):
             (member.id, member.name, member.created_at, True, member.display_name, member.joined_at, member.bot)
         )
         conn.commit()
+
+def sql_member_returned(member: Member):
+    conn = Database.get_connection()
+
+    with conn.cursor() as cursor:
+        cursor.execute("""
+            UPDATE members
+            SET in_server = True
+            WHERE member_id = %s AND in_server = False;
+            """,
+            (member.id)
+        )
+        conn.commit()
+
+def sql_member_left(member: Member):
+    conn = Database.get_connection()
+
+    with conn.cursor() as cursor:
+        cursor.execute("""
+            UPDATE members
+            SET in_server = False
+            WHERE member_id = %s AND in_server = True;
+            """,
+            (member.id)
+        )
+        conn.commit()
